@@ -5,7 +5,7 @@ import { toSnakeCase } from '../utils/format-string.js';
 
 const myRequire = createRequire(import.meta.url);
 
-let clientEntryFile = 'views/client-main.js'; // Valeur par défaut en cas d'échec
+let clientEntryFile = 'views/client-main.ts'; // Valeur par défaut en cas d'échec
 let cssFiles: string[] = [];
 
 try {
@@ -13,8 +13,8 @@ try {
   const manifestData = readFileSync(manifestPath, 'utf-8');
   const clientManifest = JSON.parse(manifestData);
 
-  // Récupérer l'entrée pour "views/client-main.js"
-  const manifestEntry = clientManifest["views/client-main.js"];
+  // Récupérer l'entrée pour "views/client-main.ts"
+  const manifestEntry = clientManifest["views/client-main.ts"];
   if (manifestEntry) {
     clientEntryFile = manifestEntry.file || clientEntryFile;
 

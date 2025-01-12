@@ -1,8 +1,8 @@
 {
-  "views/client-main.js": {
+  "views/client-main.ts": {
     "file": "assets/client-main-duT8QvMG.js",
     "name": "client-main",
-    "src": "views/client-main.js",
+    "src": "views/client-main.ts",
     "isEntry": true,
     "css": [
       "assets/client-main-Dp9v3rjT.css"

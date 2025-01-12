@@ -1,4 +1,3 @@
-// views/client-main.js
 import Main from './Main.svelte';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -9,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
       target,
       hydrate: true,
       props: {
-        dataForHydration: window.main_component, // passage correct des props
+        dataForHydration: window.main_component,
       },
     });
   }
