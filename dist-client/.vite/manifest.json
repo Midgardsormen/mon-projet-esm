@@ -1,0 +1,31 @@
+{
+  "_Home-!~{003}~.js": {
+    "file": "assets/Home-DKWRNDQR.css",
+    "src": "_Home-!~{003}~.js"
+  },
+  "_Home-BLQNxmZQ.js": {
+    "file": "assets/Home-BLQNxmZQ.js",
+    "name": "Home",
+    "css": [
+      "assets/Home-DKWRNDQR.css"
+    ]
+  },
+  "views/client-main.js": {
+    "file": "assets/client-main-BB0iE3qz.js",
+    "name": "client-main",
+    "src": "views/client-main.js",
+    "isEntry": true,
+    "imports": [
+      "_Home-BLQNxmZQ.js"
+    ]
+  },
+  "views/components/Home/statics/client-home.js": {
+    "file": "assets/client-home-B-pW5Vy9.js",
+    "name": "client-home",
+    "src": "views/components/Home/statics/client-home.js",
+    "isEntry": true,
+    "imports": [
+      "_Home-BLQNxmZQ.js"
+    ]
+  }
+}
