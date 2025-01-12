@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TransactionsModule } from './api/transactions/transactions.module.js';
-import { HomeModule } from './pages/home/home.module.js';
 import { AppController } from './app.controller.js';
 import { SupabaseService } from '../libs/shared/src/services/supabase/supabase.service.js';
 
@@ -11,8 +10,7 @@ import { SupabaseService } from '../libs/shared/src/services/supabase/supabase.s
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TransactionsModule,
-    HomeModule
+    TransactionsModule
   ],
   controllers: [AppController],
   providers: [SupabaseService],

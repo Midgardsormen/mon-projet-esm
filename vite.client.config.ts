@@ -6,10 +6,7 @@ export default defineConfig({
   build: {
     outDir: 'dist-client',
     rollupOptions: {
-      input: {
-        'client-main': path.resolve(__dirname, 'views/client-main.js'),
-        'client-home': path.resolve(__dirname, 'views/components/home/statics/client-home.js')
-      },
+      input: path.resolve(__dirname, 'views/client-main.js'),
     },
     manifest: true,
   },
