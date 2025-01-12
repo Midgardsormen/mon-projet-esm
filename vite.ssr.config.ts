@@ -8,7 +8,7 @@ export default defineConfig({
     outDir: 'dist-ssr', // dossier de build SSR
     ssr: true,
     rollupOptions: {
-      input:  path.resolve(__dirname, 'views/ssr-main.ts'), // point d'entrée SSR
+      input:  path.resolve(__dirname, 'views/ssr-main.js'), // point d'entrée SSR
       output: {
         format: 'cjs', // ou ESM selon besoin
       },

@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CreateTransactionDto } from '../../dto/create-transaction.dto.js';
 import { TransactionsService } from './transactions.service.js';
 
@@ -20,4 +20,20 @@ export class TransactionsController {
   create(@Body() createTransactionDto: CreateTransactionDto) {
     return this.transactionsService.create(createTransactionDto);
   }
+
+  @ApiOperation({ summary: 'Mettre à jour une transaction existante' })
+  @ApiParam({ name: 'id', description: 'ID de la transaction à mettre à jour' })
+  @ApiBody({ type: CreateTransactionDto, description: 'Données à mettre à jour' })
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateData: Partial<CreateTransactionDto>) {
+    return this.transactionsService.update(id, updateData);
+  }
+
+  @ApiOperation({ summary: 'Supprimer une transaction' })
+  @ApiParam({ name: 'id', description: 'ID de la transaction à supprimer' })
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.transactionsService.delete(id);
+  }
+
 }

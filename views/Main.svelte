@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Board from './components/board/Board.svelte';
     import { onMount } from 'svelte';
     import { transactions } from './components/transactions/stores/transactionsStore';

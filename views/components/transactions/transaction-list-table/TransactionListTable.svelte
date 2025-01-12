@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { transactions } from '../stores/transactionsStore';
 </script>
 

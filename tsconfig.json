@@ -19,5 +19,5 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
   },
-  "include": ["src", "types", "svelte.d.ts"]
+  "include": ["src/**/*", "types", "svelte.d.ts"]
 }

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { createTransaction } from './statics/api';
     import { transactions } from '../stores/transactionsStore';
 
