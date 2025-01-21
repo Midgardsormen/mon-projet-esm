@@ -72,7 +72,7 @@ export async function svelteTemplateEngine(
 
   // Injecter les fichiers CSS en ajoutant des balises <link>
   cssFiles.forEach((cssFile) => {
-    htmlResponse = `<link rel="stylesheet" href="/static/${cssFile}" />` + htmlResponse;
+    htmlResponse = `<link rel="stylesheet" href="https://unpkg.com/yesvelte@next/css/tabler.min.css" /><link rel="stylesheet" href="/static/${cssFile}" />` + htmlResponse;
   });
 
   // Injecter le script client en utilisant le fichier déterminé par le manifest
