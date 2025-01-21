@@ -1,9 +1,24 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import { transactions } from '../stores/transactionsStore';
+
+  export let dataForHydration;
+  
+  let displayedTransactions = dataForHydration?.transactions || [];
+
+  const unsubscribe = transactions.subscribe(storeTransactions => {
+    if (storeTransactions && storeTransactions.length > 0) {
+      displayedTransactions = storeTransactions;
+    }
+  });
+  onDestroy(() => {
+    unsubscribe();
+  });
+
 </script>
 
 <ul>
-  {#each $transactions as transaction (transaction.id)}
+  {#each displayedTransactions  as transaction (transaction.id)}
       <li>
           <strong>{transaction.type}</strong>: {transaction.amount} €
           <br />

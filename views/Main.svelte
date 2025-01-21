@@ -9,13 +9,12 @@
     transactions.set(dataForHydration.transactions || []);
 
   });
-    console.log('++++++++++++++++', dataForHydration)
   </script>
   
   <main>
     <h1>{dataForHydration.message}</h1>
     <div id="app">
-      <Board />
+      <Board dataForHydration={dataForHydration}/>
     </div>
   </main>
   

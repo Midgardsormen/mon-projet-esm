@@ -1,5 +1,7 @@
 # compiled output
 /dist
+/dist-client
+/dist-ssr
 /node_modules
 /build
 
