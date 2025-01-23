@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { CreateTransactionDto } from 'types/interfaces.js';
 
 // Créez une instance Axios avec une base URL pour vos API
 const apiClient = axios.create({
@@ -9,12 +10,16 @@ const apiClient = axios.create({
 });
 
 // Fonction pour créer une transaction
-export async function createTransaction(data) {
+export async function createTransaction(data:CreateTransactionDto): Promise<CreateTransactionDto> {
   try {
     const response = await apiClient.post('/transactions', data);
     return JSON.parse(response.config.data);
-  } catch (error) {
-    console.error('Failed to create transaction:', error.response?.data || error.message);
+  }  catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Failed to create transaction:', error.response?.data || error.message);
+    } else {
+      console.error(error);
+    }
     throw error;
   }
 }

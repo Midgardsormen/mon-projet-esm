@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import path from 'path';
+import { sveltePreprocess } from 'svelte-preprocess';
 
 export default defineConfig({
   // Mode SSR
@@ -20,6 +21,12 @@ export default defineConfig({
         hydratable: true,
       },
       emitCss: true, // pour extraire le CSS
+      preprocess: sveltePreprocess({
+        scss: {
+          // options SCSS éventuelles
+        },
+        typescript: true,
+      }),
     }),
   ],
 });

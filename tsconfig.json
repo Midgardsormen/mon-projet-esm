@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    // config Nest existante
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "target": "ES2020",
@@ -13,11 +14,22 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
+    "verbatimModuleSyntax": true,
+    // Recommandé pour Svelte
+    "isolatedModules": true,
+    // pour autoriser l'import .svelte
+    "allowJs": true, // ou false, dépend de ton usage
+    "strict": true, // plus safe
+    "types": ["svelte"]
   },
-  "include": ["src/**/*", "types", "svelte.d.ts"]
+  // IMPORTANT : "include" doit mentionner tes .svelte
+  "include": [
+    "src/**/*",
+    "types",
+    "svelte.d.ts",
+    // Ajoute
+    "views/**/*.svelte",
+    "views/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
 }

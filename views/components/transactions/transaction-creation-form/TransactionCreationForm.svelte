@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { createTransaction } from './statics/api';
-    import { transactions } from '../stores/transactionsStore';
+    import { createTransaction } from './statics/api.js';
+    import { transactions } from '../stores/transactionsStore.js';
 
     let amount = 0;
-    let type = 'income'; // Valeur par défaut
+    let type: 'income' | 'expense' = 'income';
     let category = '';
     let description = '';
     let date = '';

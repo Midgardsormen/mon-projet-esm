@@ -5,18 +5,18 @@ export class CreateTransactionDto {
     @ApiProperty({ description: 'Montant de la transaction', example: 100.50 })
     @IsNumber()
     @IsNotEmpty()
-    amount: number;
+    amount!: number;
 
     @ApiProperty({ description: 'Type de la transaction', example: 'income' })
     @IsString()
     @IsNotEmpty()
     @IsIn(['income', 'expense'], { message: "Le type doit être 'income' ou 'expense'." })
-    type: string;
+    type!: string;
   
     @ApiProperty({ description: 'Catégorie de la transaction (e.g. Salaire)', example: 'Salaire' })
     @IsString()
     @IsNotEmpty()
-    category: string;
+    category!: string;
   
     @ApiProperty({ description: 'Description facultative', example: 'Prime de fin d\'année', required: false })
     @IsString()
@@ -26,5 +26,5 @@ export class CreateTransactionDto {
     @ApiProperty({ description: 'Date de la transaction', example: '2023-12-31' })
     @IsString()
     @IsNotEmpty()
-    date: string; // On utilise string pour simplifier le traitement
+    date!: string; // On utilise string pour simplifier le traitement
 }

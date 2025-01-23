@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Card, CardBody } from 'yesvelte'
   import { onDestroy } from 'svelte';
-  import { transactions } from '../stores/transactionsStore';
+  import { transactions } from '../stores/transactionsStore.js';
+    import { Card, CardBody } from 'yesvelte/card';
 
   export let dataForHydration;
   
@@ -38,15 +38,27 @@
 <style lang="scss">
   .transaction-table{
     list-style-type: none;
-    padding: 0;
+    padding: 1rem;
     &__line{
       margin-bottom: 1rem;
       &--expense{
-        background-color:red
+        background-color:rgba(214, 57, 57, 0.25)
       }
       &--income{
-        background-color:green
+        background-color:rgba(47, 179, 68, 0.25)
       }
+      :global(.y-card) {
+        background-color: transparent;
+      }
+    }
+    &__amount{
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+    &__items{
+      display: flex;
+      gap: 0.25rem;
+      justify-content: space-between;
     }
     
   }

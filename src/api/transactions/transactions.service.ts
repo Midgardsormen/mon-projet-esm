@@ -1,6 +1,6 @@
 import { SupabaseService } from '../../../libs/shared/src/services/supabase/supabase.service.js';
 import { Injectable } from '@nestjs/common';
-import { CreateTransactionDto } from 'src/dto/create-transaction.dto.js';
+import { CreateTransactionDto } from '../../dto/create-transaction.dto.js';
 
 
 @Injectable()
