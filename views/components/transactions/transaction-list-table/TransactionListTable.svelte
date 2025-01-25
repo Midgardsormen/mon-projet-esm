@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import { transactions } from '../stores/transactionsStore.js';
-    import { Card, CardBody } from 'yesvelte/card';
+  import { Card, CardBody } from 'yesvelte/card';
+    import TransactionDeletionButton from '../transaction-deletion-button/TransactionDeletionButton.svelte';
 
   export let dataForHydration;
   
@@ -31,6 +32,7 @@
             </div>
           </CardBody>
         </Card>
+        <TransactionDeletionButton idToDelete={transaction.id}/>
       </li>
   {/each}
 </ul>
@@ -50,6 +52,9 @@
       :global(.y-card) {
         background-color: transparent;
       }
+      :global(.y-card-body) {
+        padding: 0.5rem 0.75rem;
+      }
     }
     &__amount{
       font-weight: bold;
@@ -57,8 +62,25 @@
     }
     &__items{
       display: flex;
-      gap: 0.25rem;
+      gap: 1rem;
       justify-content: space-between;
+    }
+    &__item{
+      margin-bottom: 0.25rem;
+    }
+    &__category{
+      flex-grow: 0;
+      width: 20%;
+      text-overflow: ellipsis;
+    }
+    &__description{
+      flex-grow:1;
+      font-style: normal;
+    }
+    &__date{
+      flex-grow: 0;
+      width: 5rem;
+      text-align: right;
     }
     
   }
