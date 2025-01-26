@@ -33,7 +33,8 @@ export class TransactionsService {
     const { data, error } = await supabase
       .from('transactions')
       .update(updateData)
-      .eq('id', id);
+      .eq('id', id)
+      .select();
     if (error) {
       throw new Error(error.message);
     }
@@ -45,7 +46,8 @@ export class TransactionsService {
     const { data, error } = await supabase
       .from('transactions')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .select();
     if (error) {
       throw new Error(error.message);
     }

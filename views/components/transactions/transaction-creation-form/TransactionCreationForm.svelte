@@ -15,15 +15,12 @@
       const payload = { amount, type, category, description, date };
       try {
           const response: CreateTransactionDto[] = await createTransaction(payload);
-          console.log('Transaction créée :', response);
-           transactions.subscribe(x=> {console.log('transactions avantt :', x)});
 
           // Mettre à jour le store après création
           transactions.update(current => {
                 return [...current, response[0]]
             } );
           
-            transactions.subscribe(x=> {console.log('transactions aprèss :', x)});
 
           // Réinitialiser les champs
           amount = 0;

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { transactions } from '../../stores/transactionsStore.js';
+import type { CreateTransactionDto } from 'types/interfaces.js';
 
 const apiClient = axios.create({
     baseURL: '/api',
@@ -20,5 +21,19 @@ const apiClient = axios.create({
       // En cas d'erreur, on met un tableau vide
       transactions.set([]);
       return [];
+    }
+  }
+
+  export async function updateTransaction(transactionId:string, data: Partial<CreateTransactionDto>): Promise<CreateTransactionDto[]> {
+    try {
+      const response = await apiClient.patch(`/transactions/${transactionId}`, data);
+      return response.data;
+    }  catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Failed to create transaction:', error.response?.data || error.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
   }

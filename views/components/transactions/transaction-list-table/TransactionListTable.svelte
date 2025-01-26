@@ -3,11 +3,17 @@
   import { transactions } from '../stores/transactionsStore.js';
   import { Card, CardBody } from 'yesvelte/card';
     import TransactionDeletionButton from '../transaction-deletion-button/TransactionDeletionButton.svelte';
-    import { fetchTransactions } from './statics/TransactionListTable.js';
+    import { fetchTransactions, updateTransaction } from './statics/TransactionListTable.js';
+    import { Icon } from 'yesvelte/icon';
+
+    import TransactionEditableLine from './transaction-editable-line/TransactionEditableLine.svelte';
 
   export let dataForHydration;
   
   let displayedTransactions = dataForHydration?.transactions || [];
+  let editingTransactionId: string | null = null;
+
+ 
 
   onMount(async () => {
     // Si on n’a pas reçu dataForHydration, on récupère les données par fetch
@@ -21,15 +27,31 @@
       displayedTransactions = storeTransactions;
     }
   });
-  
+
   onDestroy(() => {
     unsubscribe();
   });
+
+  const enterEditMode = (id: string) => {
+      editingTransactionId = id;
+  }
+
+
+
 
 </script>
 
 <ul class="transaction-table">
   {#each displayedTransactions  as transaction (transaction.id)}
+    {#if editingTransactionId === transaction.id}
+      <li class="transaction-table__line transaction-table__line--{transaction.type}">
+        <Card>
+          <CardBody>
+            <TransactionEditableLine transactionLineData={transaction}/>
+          </CardBody>
+        </Card>
+      </li>
+    {:else}
       <li class="transaction-table__line transaction-table__line--{transaction.type}">
         <Card>
           <CardBody>
@@ -42,11 +64,13 @@
           </CardBody>
         </Card>
         <TransactionDeletionButton idToDelete={transaction.id}/>
+        <button on:click={() => enterEditMode(transaction.id)}>
       </li>
+    {/if}
   {/each}
 </ul>
 
-<style lang="scss">
+<style lang="scss" global>
   .transaction-table{
     list-style-type: none;
     padding: 1rem;
