@@ -20,7 +20,8 @@ export class TransactionsService {
     const supabase = this.supabaseService.getClient();
     const { data, error } = await supabase
       .from('transactions')
-      .insert([createTransactionDto]);
+      .insert([createTransactionDto])
+      .select();
     if (error) {
       throw new Error(error.message);
     }

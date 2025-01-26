@@ -10,10 +10,10 @@ const apiClient = axios.create({
 });
 
 // Fonction pour créer une transaction
-export async function createTransaction(data:CreateTransactionDto): Promise<CreateTransactionDto> {
+export async function createTransaction(data:CreateTransactionDto): Promise<CreateTransactionDto[]> {
   try {
     const response = await apiClient.post('/transactions', data);
-    return JSON.parse(response.config.data);
+    return response.data;
   }  catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Failed to create transaction:', error.response?.data || error.message);

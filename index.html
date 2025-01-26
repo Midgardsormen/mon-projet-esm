@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mon Projet Svelte + Vite</title>
+    <link rel="stylesheet" href="https://unpkg.com/yesvelte@next/css/tabler.min.css" />
+  </head>
+  <body>
+    <!-- C'est ici que le composant Svelte sera hydraté -->
+    <div id="main_component"></div>
+
+    <!-- On importe client-main.js, qui lance le composant -->
+    <!-- 
+      Si ton vite.client.config.ts a "root" = le répertoire racine
+      et que client-main.js est dans "views/",
+      il faut adapter le chemin : "/views/client-main.js"
+    -->
+    <script type="module" src="/views/client-main.js"></script>
+  </body>
+</html>

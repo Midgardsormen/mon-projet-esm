@@ -1,11 +1,10 @@
 <script lang="ts">
     import { FormInput, FormTextarea } from "yesvelte/form";
     import {Icon} from "yesvelte/icon";
-    import { Button } from 'yesvelte/button'
     import { createTransaction } from './statics/transaction-creation.js';
     import { transactions } from '../stores/transactionsStore.js';
+    import type { CreateTransactionDto } from "types/interfaces.js";
     
-    let id: string ='';
     let amount: number = 0;
     let type: 'income' | 'expense' = 'income';
     let category = '';
@@ -15,13 +14,16 @@
     async function handleSubmit() {
       const payload = { amount, type, category, description, date };
       try {
-          const response = await createTransaction(payload);
+          const response: CreateTransactionDto[] = await createTransaction(payload);
           console.log('Transaction créée :', response);
-          console.log('transactions avant :', transactions);
+           transactions.subscribe(x=> {console.log('transactions avantt :', x)});
 
           // Mettre à jour le store après création
-          transactions.update(current => [...current, response]);
-          console.log('transactions après :', transactions);
+          transactions.update(current => {
+                return [...current, response[0]]
+            } );
+          
+            transactions.subscribe(x=> {console.log('transactions aprèss :', x)});
 
           // Réinitialiser les champs
           amount = 0;

@@ -11,21 +11,35 @@ export default defineConfig({
     },
     manifest: true,
   },
+  // --- Ajout du bloc server ---
+  server: {
+    // Ici, tu peux changer le port si tu veux (par défaut: 5173)
+    port: 5173,
+    proxy: {
+      // Lorsque le front appelle "/api/quelque-chose",
+      // on redirige vers http://localhost:3000/quelque-chose
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        // Réécrit le chemin si tu ne veux pas garder le /api
+        // Dans ce cas, si tu appelles /api/transactions,
+        // ça devient http://localhost:3000/transactions
+      },
+    },
+  },
+  // --- Fin du bloc server ---
   plugins: [
     svelte({
       compilerOptions: {
         hydratable: true,
       },
-        // <-- Ici on indique à la plugin Svelte d'utiliser svelte-preprocess
-        preprocess: sveltePreprocess({
-          scss: {
-            // Ici tu peux configurer des options pour SCSS,
-            // par exemple ajouter des variables globales
-            // prependData: `@import 'src/styles/variables.scss';`
-          },
-          // Si tu utilises TypeScript dans tes Svelte Components :
-          typescript: true,
-        }),
+      preprocess: sveltePreprocess({
+        scss: {
+          // Exemple : ajout de SCSS global
+          // prependData: `@import 'src/styles/variables.scss';`
+        },
+        typescript: true,
+      }),
     }),
   ],
 });

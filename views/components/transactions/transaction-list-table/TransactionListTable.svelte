@@ -1,18 +1,27 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { transactions } from '../stores/transactionsStore.js';
   import { Card, CardBody } from 'yesvelte/card';
     import TransactionDeletionButton from '../transaction-deletion-button/TransactionDeletionButton.svelte';
+    import { fetchTransactions } from './statics/TransactionListTable.js';
 
   export let dataForHydration;
   
   let displayedTransactions = dataForHydration?.transactions || [];
+
+  onMount(async () => {
+    // Si on n’a pas reçu dataForHydration, on récupère les données par fetch
+    if (!dataForHydration?.transactions) {
+      displayedTransactions = await fetchTransactions();
+    }
+  });
 
   const unsubscribe = transactions.subscribe(storeTransactions => {
     if (storeTransactions && storeTransactions.length > 0) {
       displayedTransactions = storeTransactions;
     }
   });
+  
   onDestroy(() => {
     unsubscribe();
   });
