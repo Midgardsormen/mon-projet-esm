@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TransactionsModule } from './api/transactions/transactions.module.js';
 import { AppController } from './app.controller.js';
 import { SupabaseService } from '../libs/shared/src/services/supabase/supabase.service.js';
+import { CategoriesModule } from './api/categories/categories.module.js';
 
 
 @Module({
@@ -10,7 +11,8 @@ import { SupabaseService } from '../libs/shared/src/services/supabase/supabase.s
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TransactionsModule
+    TransactionsModule,
+    CategoriesModule
   ],
   controllers: [AppController],
   providers: [SupabaseService],

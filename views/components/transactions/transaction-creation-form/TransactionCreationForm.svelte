@@ -2,17 +2,28 @@
     import { FormInput, FormTextarea } from "yesvelte/form";
     import {Icon} from "yesvelte/icon";
     import { createTransaction } from './statics/transaction-creation.js';
-    import { transactions } from '../stores/transactionsStore.js';
+    import { transactions } from '../../../stores/transactionsStore.js';
     import type { CreateTransactionDto } from "types/interfaces.js";
+    import { categories } from '../../../stores/categoriesStore.js';
+    import { onMount } from 'svelte';
+    import CategorySelectorLayer from '../../categories/categories-selector/CategorySelectorLayer.svelte';
+    import { fetchCategories } from '../../categories/categories-selector/categories-selector.js';
     
     let amount: number = 0;
     let type: 'income' | 'expense' = 'income';
-    let category = '';
+    let categoryId: string = '';
+    let categoryLabel: string = '';
     let description = '';
     let date = '';
 
+    let showEnd = false;
+
+    onMount(async () => {
+        await fetchCategories();
+    });
+
     async function handleSubmit() {
-      const payload = { amount, type, category, description, date };
+      const payload = { amount, type, category: categoryLabel, description, date };
       try {
           const response: CreateTransactionDto[] = await createTransaction(payload);
 
@@ -25,12 +36,20 @@
           // Réinitialiser les champs
           amount = 0;
           type = 'income';
-          category = '';
+          categoryLabel = '';
+          categoryId='';
           description = '';
           date = '';
       } catch (err) {
           console.error('Erreur lors de la création de la transaction :', err);
       }
+    }
+
+    function handleSelectCategory(e: CustomEvent<{ id: string; label: string }>) {
+    categoryId = e.detail.id;
+    categoryLabel = e.detail.label;
+    // Éventuellement fermer l'offcanvas :
+    showEnd = false;
   }
 
 </script>
@@ -71,7 +90,10 @@
   
     <div>
         <label for="category">Catégorie :</label>
-        <input id="category" type="text" bind:value={category} required />
+        <input id="category" readonly type="text" bind:value={categoryLabel} required />
+        <button type="button"  on:click={() => (showEnd = !showEnd)}>
+            Choisir une catégorie
+          </button>
     </div>
   
     <FormTextarea label="Description (facultatif) :" placeholder="Entrez la description..." bind:value={description} />
@@ -83,6 +105,10 @@
   
     <button type="submit">Ajouter la transaction</button>
   </form>
+
+<CategorySelectorLayer transactionType={type} showEnd={showEnd} on:selectCategory={handleSelectCategory} />
+
+
 
   <style lang="scss">
     .transaction-creation-form{

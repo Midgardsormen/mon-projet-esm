@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
-  import { transactions } from '../stores/transactionsStore.js';
+  import { transactions } from '../../../stores/transactionsStore.js';
   import { Card, CardBody } from 'yesvelte/card';
     import TransactionDeletionButton from '../transaction-deletion-button/TransactionDeletionButton.svelte';
-    import { fetchTransactions, updateTransaction } from './statics/TransactionListTable.js';
+    import { fetchTransactions } from './statics/TransactionListTable.js';
     import { Icon } from 'yesvelte/icon';
 
     import TransactionEditableLine from './transaction-editable-line/TransactionEditableLine.svelte';
+    import { Button } from 'yesvelte/button';
 
   export let dataForHydration;
   
@@ -44,13 +45,7 @@
 <ul class="transaction-table">
   {#each displayedTransactions  as transaction (transaction.id)}
     {#if editingTransactionId === transaction.id}
-      <li class="transaction-table__line transaction-table__line--{transaction.type}">
-        <Card>
-          <CardBody>
-            <TransactionEditableLine transactionLineData={transaction}/>
-          </CardBody>
-        </Card>
-      </li>
+      <TransactionEditableLine transactionLineData={transaction} on:editDone={() => editingTransactionId = null}/>
     {:else}
       <li class="transaction-table__line transaction-table__line--{transaction.type}">
         <Card>
@@ -63,8 +58,12 @@
             </div>
           </CardBody>
         </Card>
-        <TransactionDeletionButton idToDelete={transaction.id}/>
-        <button on:click={() => enterEditMode(transaction.id)}>
+        <div class="transaction-table__buttons">
+          <TransactionDeletionButton idToDelete={transaction.id}/>
+          <Button  on:click={() => enterEditMode(transaction.id)}>
+            <Icon name="edit" />
+          </Button>
+        </div>
       </li>
     {/if}
   {/each}
@@ -73,9 +72,12 @@
 <style lang="scss" global>
   .transaction-table{
     list-style-type: none;
-    padding: 1rem;
+    padding: 0;
     &__line{
+      display: flex;
+      justify-content: space-between;
       margin-bottom: 1rem;
+      gap: 0.5rem;
       &--expense{
         background-color:rgba(214, 57, 57, 0.25)
       }
@@ -83,11 +85,17 @@
         background-color:rgba(47, 179, 68, 0.25)
       }
       :global(.y-card) {
+        flex-grow: 1;
         background-color: transparent;
       }
       :global(.y-card-body) {
         padding: 0.5rem 0.75rem;
       }
+    }
+    &__buttons{
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
     }
     &__amount{
       font-weight: bold;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { transactions } from '../../stores/transactionsStore.js';
+import { transactions } from '../../../../stores/transactionsStore.js';
 import type { CreateTransactionDto } from 'types/interfaces.js';
 
 const apiClient = axios.create({

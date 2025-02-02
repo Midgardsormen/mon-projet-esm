@@ -1,26 +1,27 @@
 import { Controller, Get, Render } from '@nestjs/common';
-import { SupabaseService } from '../libs/shared/src/services/supabase/supabase.service.js'; 
+import { CategoriesService } from './api/categories/categories.service.js';
+import { TransactionsService } from './api/transactions/transactions.service.js';
 
 @Controller()
 export class AppController {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly transactionsService: TransactionsService,
+    private readonly categoriesService:CategoriesService
+  ) {}
 
   @Get()
   @Render('ssr-main')
   async getHome() {
-    // Récupérer les transactions via Supabase pour le composant Home
-    const supabase = this.supabaseService.getClient();
-    const { data, error } = await supabase.from('transactions').select('*');
-    if (error) {
-      throw new Error(error.message);
-    }
+    const transactions = await this.transactionsService.findAll();
+    const categories = await this.categoriesService.findAll();
 
     return {
       ssr: 'main_component',
       hydration: true,
       dataForHydration: {
         message: 'Hello from SSR!',
-        transactions: data,  // Inclure les transactions dans les données
+        transactions: transactions,  // Inclure les transactions dans les données
+        categories: categories
       },
     };
   }

@@ -2,7 +2,7 @@
     import { Button } from 'yesvelte/button';
     import { Icon } from 'yesvelte/icon';
     import { deleteTransaction } from './statics/transaction-deletion.js';
-    import { transactions } from '../stores/transactionsStore.js';
+    import { transactions } from '../../../stores/transactionsStore.js';
 
     export let idToDelete: string;
 
