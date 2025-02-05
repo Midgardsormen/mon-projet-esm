@@ -14,7 +14,7 @@ export class AppController {
   async getHome() {
     const transactions = await this.transactionsService.findAll();
     const categories = await this.categoriesService.findAll();
-
+console.log('transactions',transactions)
     return {
       ssr: 'main_component',
       hydration: true,

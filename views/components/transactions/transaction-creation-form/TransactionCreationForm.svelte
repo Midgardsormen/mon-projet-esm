@@ -3,53 +3,51 @@
     import {Icon} from "yesvelte/icon";
     import { createTransaction } from './statics/transaction-creation.js';
     import { transactions } from '../../../stores/transactionsStore.js';
-    import type { CreateTransactionDto } from "types/interfaces.js";
-    import { categories } from '../../../stores/categoriesStore.js';
+    import type { CategoryWithChildren, CreateTransactionDto, Transaction } from "types/interfaces.js";
     import { onMount } from 'svelte';
     import CategorySelectorLayer from '../../categories/categories-selector/CategorySelectorLayer.svelte';
-    import { fetchCategories } from '../../categories/categories-selector/categories-selector.js';
+    import { fetchCategories, fetchCategoryById } from '../../categories/categories-selector/categories-selector.js';
     
     let amount: number = 0;
     let type: 'income' | 'expense' = 'income';
-    let categoryId: string = '';
-    let categoryLabel: string = '';
+    let category_id: string = '';
+    let category_label: string = '';
     let description = '';
-    let date = '';
-
-    let showEnd = false;
+    let date = new Date().toLocaleDateString('fr-FR');
+    let showCategories = false;
 
     onMount(async () => {
         await fetchCategories();
     });
 
     async function handleSubmit() {
-      const payload = { amount, type, category: categoryLabel, description, date };
+      const payload = { amount, type, category_id, description, date };
       try {
           const response: CreateTransactionDto[] = await createTransaction(payload);
-
+          const category: CategoryWithChildren | null = await fetchCategoryById(category_id)
           // Mettre à jour le store après création
           transactions.update(current => {
-                return [...current, response[0]]
+                return [...current, {...response[0], ...{category}} as Transaction]
             } );
           
 
           // Réinitialiser les champs
           amount = 0;
           type = 'income';
-          categoryLabel = '';
-          categoryId='';
+          category_label = '';
+          category_id='';
           description = '';
           date = '';
+          
       } catch (err) {
           console.error('Erreur lors de la création de la transaction :', err);
       }
     }
 
-    function handleSelectCategory(e: CustomEvent<{ id: string; label: string }>) {
-    categoryId = e.detail.id;
-    categoryLabel = e.detail.label;
-    // Éventuellement fermer l'offcanvas :
-    showEnd = false;
+    function handleSelectCategory(e: CustomEvent<CategoryWithChildren>) {
+        category_id = e.detail.id;
+        category_label = e.detail.name;
+        showCategories = false;
   }
 
 </script>
@@ -85,13 +83,14 @@
         </label>
     </div>
 
-    <FormInput label="Montant :" placeholder="Entrez le montant..." type="number" required bind:value={amount} />
+    <FormInput label="Montant :" placeholder="Entrez le montant..." mask="99.99" required bind:value={amount} />
   
   
     <div>
         <label for="category">Catégorie :</label>
-        <input id="category" readonly type="text" bind:value={categoryLabel} required />
-        <button type="button"  on:click={() => (showEnd = !showEnd)}>
+        <input id="category" readonly type="text" bind:value={category_id} required />
+        <p>{category_label}</p>
+        <button type="button"  on:click={() => { (showCategories = !showCategories) }}>
             Choisir une catégorie
           </button>
     </div>
@@ -100,13 +99,18 @@
   
     <div class="y-el y-form-date-picker">
         <label class="y-el y-label y-label-required" for="date">Date :</label>
-        <input class="y-el y-date-picker" id="date" type="date" bind:value={date} required />
+        <input class="y-el y-date-picker" id="date" type="date" bind:value={date} />
     </div>
   
     <button type="submit">Ajouter la transaction</button>
   </form>
 
-<CategorySelectorLayer transactionType={type} showEnd={showEnd} on:selectCategory={handleSelectCategory} />
+<CategorySelectorLayer 
+    transactionType={type} 
+    showCategories={showCategories} 
+    on:selectCategory={handleSelectCategory} 
+    on:closeCategoryLayer={() => showCategories = false} 
+/>
 
 
 

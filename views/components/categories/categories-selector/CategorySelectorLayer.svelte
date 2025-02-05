@@ -9,7 +9,7 @@
 
 
 
-    export let showEnd: any;
+    export let showCategories: any;
     export let transactionType: 'income' | 'expense';
 
     const dispatch = createEventDispatcher();
@@ -19,7 +19,7 @@
     let showBack = false;
 
 
-    $: if (showEnd && !showBack) {
+    $: if (showCategories && !showBack) {
         currentItems = $categories.filter(cat => cat.type === transactionType);
     }
 
@@ -35,17 +35,20 @@
     title = defaultTitle;
   }
 
-  function handleSelectCategory(event: CustomEvent<{ id: string; label: string }>) {
+  function handleSelectCategory(event: CustomEvent<CategoryWithChildren>) {
     dispatch('selectCategory', event.detail);
   }
-  $: if (!showEnd) {
+
+  $: if (!showCategories) {
+    console.log("showCategories+++", showCategories);
+    dispatch('closeCategoryLayer');
     currentItems = $categories.filter(cat => cat.type === transactionType);
     title = defaultTitle;
     showBack = false;
   }
 </script>
 
-<Offcanvas placement="end" bind:show={showEnd} noScroll autoClose>
+<Offcanvas placement="end" bind:show={showCategories} noScroll autoClose>
     <OffcanvasHeader >
         <div>
         {#if showBack}

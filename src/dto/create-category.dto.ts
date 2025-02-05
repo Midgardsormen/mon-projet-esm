@@ -17,4 +17,14 @@ export class CreateCategoryDto {
     @IsOptional()
     @IsUUID()
     parent_id?: string; // L'ID de la catégorie parente (facultatif)
+    
+    @ApiProperty({ description: 'label de l\'icon tabler de la catégorie', example: 'circle', required: false })
+    @IsString()
+    @IsOptional()
+    icon_label?: string;
+    
+    @ApiProperty({ description: 'Code hexa de la couleur de l\'icon tabler de la catégorie', example: '#000000', required: false })
+    @IsString()
+    @IsOptional()
+    icon_color?: string;
 }

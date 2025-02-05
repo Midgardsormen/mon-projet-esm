@@ -36,4 +36,21 @@ const apiClient = axios.create({
     }
   }
 
+  export async function fetchCategoryById(id: string): Promise<CategoryWithChildren | null> {
+    try {
+      const response = await apiClient.get<CategoryWithChildren>(`/categories/${id}`);
+      const data = response.data;
+  
+      return data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error('Erreur Axios lors de la récupération d’une catégorie :', error.response?.data || error.message);
+      } else {
+        console.error('Erreur lors de la récupération d’une catégorie :', error);
+      }
+  
+      return null;
+    }
+  }
+
   

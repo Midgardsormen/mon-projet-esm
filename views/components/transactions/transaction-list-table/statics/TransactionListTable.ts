@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { transactions } from '../../../../stores/transactionsStore.js';
-import type { CreateTransactionDto } from 'types/interfaces.js';
+import type { CreateTransactionDto, Transaction } from 'types/interfaces.js';
 
 const apiClient = axios.create({
     baseURL: '/api',
@@ -24,7 +24,7 @@ const apiClient = axios.create({
     }
   }
 
-  export async function updateTransaction(transactionId:string, data: Partial<CreateTransactionDto>): Promise<CreateTransactionDto[]> {
+  export async function updateTransaction(transactionId:string, data: Partial<CreateTransactionDto>): Promise<Transaction[]> {
     try {
       const response = await apiClient.patch(`/transactions/${transactionId}`, data);
       return response.data;

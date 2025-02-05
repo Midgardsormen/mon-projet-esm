@@ -14,7 +14,8 @@
             <Card>
                 <CardBody>
                     <h1>{dataForHydration.message}</h1>
-                    <Button color="primary" on:click={() => (showEnd = !showEnd)}>Ajouter une entrée</Button>
+                    <Button color="primary" 
+                    on:click={() => {(showEnd = !showEnd); console.log('showEnd', showEnd)}}>Ajouter une entrée</Button>
                 </CardBody>
             </Card>
         </header>

@@ -8,6 +8,7 @@
 
     import TransactionEditableLine from './transaction-editable-line/TransactionEditableLine.svelte';
     import { Button } from 'yesvelte/button';
+    import { Badge } from 'yesvelte/badge';
 
   export let dataForHydration;
   
@@ -20,12 +21,14 @@
     // Si on n’a pas reçu dataForHydration, on récupère les données par fetch
     if (!dataForHydration?.transactions) {
       displayedTransactions = await fetchTransactions();
+      console.log(displayedTransactions)
     }
   });
 
   const unsubscribe = transactions.subscribe(storeTransactions => {
     if (storeTransactions && storeTransactions.length > 0) {
       displayedTransactions = storeTransactions;
+   
     }
   });
 
@@ -45,6 +48,7 @@
 <ul class="transaction-table">
   {#each displayedTransactions  as transaction (transaction.id)}
     {#if editingTransactionId === transaction.id}
+      {console.log('transactiontransaction', transaction)}
       <TransactionEditableLine transactionLineData={transaction} on:editDone={() => editingTransactionId = null}/>
     {:else}
       <li class="transaction-table__line transaction-table__line--{transaction.type}">
@@ -52,7 +56,12 @@
           <CardBody>
             <p class="transaction-table__item transaction-table__amount">{transaction.type==="expense" ? "-":"+"} {transaction.amount} €</p>
             <div class="transaction-table__items">
-              <p class="transaction-table__item transaction-table__category">{transaction.category}</p>
+              <p class="transaction-table__item transaction-table__category">
+                {#if transaction.category}
+                <span class="transaction-table__category-badge" style="--iconColor:{transaction.category.icon_color}">
+                  <Icon name="{transaction.category.icon_label}" />{transaction.category.name}</span>
+                {/if}
+              </p>
               <p class="transaction-table__item transaction-table__description">{transaction.description || 'Aucune description'}</p>
               <p class="transaction-table__item transaction-table__date">{new Date(transaction.date).toLocaleDateString()}</p>
             </div>
@@ -113,6 +122,10 @@
       flex-grow: 0;
       width: 20%;
       text-overflow: ellipsis;
+      &-badge{
+        max-width: 100%;
+        text-overflow: ellipsis;
+      }
     }
     &__description{
       flex-grow:1;

@@ -15,6 +15,13 @@ export class CategoriesController {
   findAll() {
     return this.categoriesService.findAll();
   }
+  
+  @ApiOperation({ summary: 'Récupérer une catégorie par son ID' })
+  @ApiParam({ name: 'id', description: 'ID de la category à récupérer' })
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.categoriesService.findOne(id);
+  }
 
   @ApiOperation({ summary: 'Ajouter une nouvelle category' })
   @Post()

@@ -14,8 +14,34 @@ export class CategoriesService {
       throw new Error(error.message);
     }
 
+      // Convertit la couleur hex en "r,g,b" pour chaque catégorie
+      data.forEach((category) => {
+        if (category.icon_color) {
+          category.icon_color = this.hexToRgbString(category.icon_color);
+        }
+      });
+
     // Construire une hiérarchie (catégories principales avec sous-catégories)
     return this.buildCategoryTree(data);
+  }
+  async findOne(id: string) {
+    const supabase = this.supabaseService.getClient();
+
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('id', id)
+      .single();
+  
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    if (data?.icon_color) {
+      data.icon_color = this.hexToRgbString(data.icon_color);
+    }
+    
+    return data;
   }
 
   async create(createCategoryDto: CreateCategoryDto) {
@@ -78,4 +104,25 @@ export class CategoriesService {
 
     return tree;
   }
+
+  private hexToRgbString(hex: string): string {
+    // Retire le # si présent
+    hex = hex.replace(/^#/, '');
+    
+    // Gestion du format court #RGB
+    if (hex.length === 3) {
+      // Exemple #abc => #aabbcc
+      hex = hex.split('').map((x) => x + x).join('');
+    }
+  
+    // Convertit en nombre
+    const num = parseInt(hex, 16);
+  
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+  
+    return `${r},${g},${b}`;
+  }
+
 }
