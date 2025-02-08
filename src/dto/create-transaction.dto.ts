@@ -2,8 +2,8 @@ import {  IsNumber, IsNotEmpty, IsIn,  IsOptional, IsString, IsUUID, IsNumberStr
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTransactionDto {
-    @ApiProperty({ description: 'Montant de la transaction', example: "100.50" })
-    @IsNumberString()
+    @ApiProperty({ description: 'Montant de la transaction', example: 100.50 })
+    @IsNumber()
     @IsNotEmpty()
     amount!: number;
 

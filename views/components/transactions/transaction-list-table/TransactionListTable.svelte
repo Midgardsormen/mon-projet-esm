@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CategoryListItem from './../../categories/categories-selector/CategoryListItem.svelte';
   import { onDestroy, onMount } from 'svelte';
   import { transactions } from '../../../stores/transactionsStore.js';
   import { Card, CardBody } from 'yesvelte/card';
@@ -9,6 +10,7 @@
     import TransactionEditableLine from './transaction-editable-line/TransactionEditableLine.svelte';
     import { Button } from 'yesvelte/button';
     import { Badge } from 'yesvelte/badge';
+
 
   export let dataForHydration;
   
@@ -48,18 +50,30 @@
 <ul class="transaction-table">
   {#each displayedTransactions  as transaction (transaction.id)}
     {#if editingTransactionId === transaction.id}
-      {console.log('transactiontransaction', transaction)}
       <TransactionEditableLine transactionLineData={transaction} on:editDone={() => editingTransactionId = null}/>
     {:else}
-      <li class="transaction-table__line transaction-table__line--{transaction.type}">
+      <li class="transaction-table__line ">
         <Card>
           <CardBody>
-            <p class="transaction-table__item transaction-table__amount">{transaction.type==="expense" ? "-":"+"} {transaction.amount} €</p>
+            <div class="transaction-table__header transaction-table__header--{transaction.type}">
+            <p class="transaction-table__item transaction-table__amount transaction-table__amount--{transaction.type}">{transaction.type==="expense" ? "-":"+"} {transaction.amount} €</p>
+            <div class="transaction-table__buttons">
+              <TransactionDeletionButton idToDelete={transaction.id}/>
+              <Button outline color="dark"  on:click={() => enterEditMode(transaction.id)}>
+                <Icon name="edit" />
+              </Button>
+            </div>
+            </div>
             <div class="transaction-table__items">
               <p class="transaction-table__item transaction-table__category">
                 {#if transaction.category}
-                <span class="transaction-table__category-badge" style="--iconColor:{transaction.category.icon_color}">
-                  <Icon name="{transaction.category.icon_label}" />{transaction.category.name}</span>
+                <CategoryListItem 
+                  label={transaction.category.name}
+                  id={transaction.category.id}
+                  iconLabel={transaction.category.icon_label}
+                  iconColor={transaction.category.icon_color}
+                  size={"s"}
+                />
                 {/if}
               </p>
               <p class="transaction-table__item transaction-table__description">{transaction.description || 'Aucune description'}</p>
@@ -67,12 +81,7 @@
             </div>
           </CardBody>
         </Card>
-        <div class="transaction-table__buttons">
-          <TransactionDeletionButton idToDelete={transaction.id}/>
-          <Button  on:click={() => enterEditMode(transaction.id)}>
-            <Icon name="edit" />
-          </Button>
-        </div>
+
       </li>
     {/if}
   {/each}
@@ -82,17 +91,42 @@
   .transaction-table{
     list-style-type: none;
     padding: 0;
+    &__header{
+      display: flex;
+      margin-bottom: 1rem;
+      padding: 0.25rem 0.5rem;
+      &--expense{
+        background-color:rgba(214, 57, 57, 0.125)
+      }
+      &--income{
+        background-color:rgba(47, 179, 68, 0.125)
+      }
+
+    }
+    &__amount{
+      flex-grow:1 ;
+      font-weight: bold;
+      font-size: 1.5rem;
+      &--expense{
+        color: rgb(214, 57, 57);
+      }
+      &--income{
+        color: rgb(41, 102, 51);
+      }
+    }
+    &__buttons{
+      display: flex;
+      gap: 0.25rem;
+      align-self: center; 
+      button{
+        border-radius: 50%;
+      }
+    }
     &__line{
       display: flex;
       justify-content: space-between;
       margin-bottom: 1rem;
       gap: 0.5rem;
-      &--expense{
-        background-color:rgba(214, 57, 57, 0.25)
-      }
-      &--income{
-        background-color:rgba(47, 179, 68, 0.25)
-      }
       :global(.y-card) {
         flex-grow: 1;
         background-color: transparent;
@@ -100,15 +134,6 @@
       :global(.y-card-body) {
         padding: 0.5rem 0.75rem;
       }
-    }
-    &__buttons{
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-    &__amount{
-      font-weight: bold;
-      font-size: 1.25rem;
     }
     &__items{
       display: flex;
@@ -122,10 +147,6 @@
       flex-grow: 0;
       width: 20%;
       text-overflow: ellipsis;
-      &-badge{
-        max-width: 100%;
-        text-overflow: ellipsis;
-      }
     }
     &__description{
       flex-grow:1;

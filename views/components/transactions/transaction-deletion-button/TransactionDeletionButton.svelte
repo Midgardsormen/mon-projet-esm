@@ -24,6 +24,6 @@
   }
 </script>
 
-<Button color="danger" on:click={handleDelete}>
+<Button outline color="dark"  on:click={handleDelete}>
 	<Icon name="trash" />
 </Button>

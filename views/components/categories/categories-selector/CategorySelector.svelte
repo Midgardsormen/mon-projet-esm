@@ -16,6 +16,7 @@
 
 <ul class="category-list">
   {#each itemsToShow as item}
+  <li class="category-list__li">
     <CategoryListItem
       label={item.name}
       iconLabel={item.icon_label}
@@ -25,6 +26,8 @@
       on:showChildren={(e) => handleShowChildren(e, item)}
       on:categorySelected={handleCategorySelected}
     />
+  </li>
+
   {/each}
 </ul>
 
@@ -32,5 +35,12 @@
   .category-list {
     margin: 0;
     padding: 0;
+    &__li{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      padding: 0;
+      margin: 0 0 1rem 0;    
+    }
   }
 </style>

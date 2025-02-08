@@ -50,18 +50,18 @@
 
 <Offcanvas placement="end" bind:show={showCategories} noScroll autoClose>
     <OffcanvasHeader >
-        <div>
-        {#if showBack}
-            <Button 
-            class="backButton"
-            color="primary"
-            on:click={goBack}
-            >
-            <Icon name="arrow-left" />
-            </Button>
-        {/if}
+        <div class="category-selector-layer__header">
+          {#if showBack}
+              <Button 
+              class="backButton"
+              color="primary"
+              on:click={goBack}
+              >
+              <Icon name="arrow-left" />
+              </Button>
+          {/if}
 
-        <div class="y-el y-offcanvas-header-title ">{title}</div>
+          <div class="y-el y-offcanvas-header-title category-selector-layer__header-title">{title}</div>
         </div>
     </OffcanvasHeader>
     <OffcanvasBody>
@@ -73,3 +73,16 @@
     </OffcanvasBody>
     
 </Offcanvas>
+
+<style lang="scss">
+  .category-selector-layer {
+    &__header{
+      display: flex;
+      gap:1rem;
+      &-title{
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+</style>

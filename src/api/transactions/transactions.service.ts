@@ -44,6 +44,11 @@ export class TransactionsService {
     if (error) {
       throw new Error(error.message);
     }
+    data?.forEach(transaction => {
+      if (transaction.category?.icon_color) {
+        transaction.category.icon_color = this.hexToRgbString(transaction.category.icon_color);
+      }
+    });
     return data;
   }
 

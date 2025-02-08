@@ -7,6 +7,12 @@
 
     export let dataForHydration;
     let showEnd = false;
+
+    let formRef: TransactionCreationForm;
+
+    $: if (!showEnd && formRef) {
+        formRef.resetForm();
+    }
 </script>
 <div class="board">
     <div class="container">
@@ -24,7 +30,7 @@
     <Offcanvas placement="end" bind:show={showEnd} backdrop noScroll autoClose>
         <OffcanvasHeader title="Ajouter une entrée" />
         <OffcanvasBody>
-            <TransactionCreationForm />
+            <TransactionCreationForm bind:this={formRef}  on:close={() => showEnd = false} />
         </OffcanvasBody>
         
     </Offcanvas>

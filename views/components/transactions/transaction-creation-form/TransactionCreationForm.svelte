@@ -4,17 +4,19 @@
     import { createTransaction } from './statics/transaction-creation.js';
     import { transactions } from '../../../stores/transactionsStore.js';
     import type { CategoryWithChildren, CreateTransactionDto, Transaction } from "types/interfaces.js";
-    import { onMount } from 'svelte';
+    import { createEventDispatcher, onMount } from 'svelte';
     import CategorySelectorLayer from '../../categories/categories-selector/CategorySelectorLayer.svelte';
     import { fetchCategories, fetchCategoryById } from '../../categories/categories-selector/categories-selector.js';
     
-    let amount: number = 0;
+    let amount: number;
     let type: 'income' | 'expense' = 'income';
     let category_id: string = '';
     let category_label: string = '';
     let description = '';
     let date = new Date().toLocaleDateString('fr-FR');
     let showCategories = false;
+
+    const dispatch = createEventDispatcher();
 
     onMount(async () => {
         await fetchCategories();
@@ -32,21 +34,27 @@
           
 
           // Réinitialiser les champs
-          amount = 0;
-          type = 'income';
-          category_label = '';
-          category_id='';
-          description = '';
-          date = '';
+          resetForm();
+
+          dispatch('close');
           
       } catch (err) {
           console.error('Erreur lors de la création de la transaction :', err);
       }
     }
+    export function resetForm() {
+        amount = 0;
+        type = 'income';
+        category_id = '';
+        category_label = '';
+        description = '';
+        date = new Date().toLocaleDateString('fr-FR');
+        showCategories = false;
+    }
 
-    function handleSelectCategory(e: CustomEvent<CategoryWithChildren>) {
+    function handleSelectCategory(e:CustomEvent<{id:string, label:string }>) {
         category_id = e.detail.id;
-        category_label = e.detail.name;
+        category_label = e.detail.label;
         showCategories = false;
   }
 
@@ -62,7 +70,17 @@
     <p class="y-el y-label y-label-required">Type :</p>
     <div class="button-shape-radio-group y-el y-form-radio-group">
         <label class="button-shape-radio-group__label">
-            <input type="radio" name="type" value="income" bind:group={type} required />
+            <input 
+            type="radio"
+             name="type"
+              value="income" 
+              bind:group={type} 
+              required 
+              on:change={() => {
+                category_id = '';
+                category_label = '';
+              }}
+              />
             <div 
             class="button-shape-radio-group__button y-el y-button"
             class:is-income={type === 'income'}
@@ -72,7 +90,17 @@
             </div>
         </label>
         <label class="button-shape-radio-group__label">
-            <input type="radio" name="type" value="expense" bind:group={type} required />
+            <input 
+            type="radio" 
+            name="type" 
+            value="expense" 
+            bind:group={type} 
+            required 
+            on:change={() => {
+                category_id = '';
+                category_label = '';
+              }}
+            />
             <div 
             class="button-shape-radio-group__button y-el y-button"
             class:is-income={type === 'income'}
@@ -82,17 +110,23 @@
             </div>
         </label>
     </div>
-
-    <FormInput label="Montant :" placeholder="Entrez le montant..." mask="99.99" required bind:value={amount} />
+    <div class="y-el y-form-input">
+        <p class="y-el y-label y-label-required">Montant :</p>
+        <input type="number" step="0.01" data-name="amount" bind:value={amount} required placeholder="Entrez le montant..."/>  €
+    </div>
   
-  
-    <div>
-        <label for="category">Catégorie :</label>
-        <input id="category" readonly type="text" bind:value={category_id} required />
-        <p>{category_label}</p>
-        <button type="button"  on:click={() => { (showCategories = !showCategories) }}>
-            Choisir une catégorie
-          </button>
+    <div class="y-el y-form-input">
+        <label class="y-el y-label y-label-required" for="category">Catégorie :</label>
+        <input type="hidden" bind:value={category_id} />
+        <div class="transaction-creation-form__category-flex-line">
+            <button 
+            class="transaction-creation-form__category-button y-el y-button y-button-size-md"
+            class:y-button-color-green={type === 'income'}
+            class:y-button-color-red={type === 'expense'} 
+            type="button"  
+            on:click={() => { (showCategories = !showCategories) }}> Choisir une catégorie </button>
+            <input id="category" type="text" bind:value={category_label} required  placeholder="Choisissez la catégorie..."/>
+        </div>
     </div>
   
     <FormTextarea label="Description (facultatif) :" placeholder="Entrez la description..." bind:value={description} />
@@ -101,8 +135,11 @@
         <label class="y-el y-label y-label-required" for="date">Date :</label>
         <input class="y-el y-date-picker" id="date" type="date" bind:value={date} />
     </div>
-  
-    <button type="submit">Ajouter la transaction</button>
+    <div class="transaction-creation-form__submit-line">
+        <button 
+        class="y-el y-button y-button-color-primary y-button-color-dark y-button-size-md"
+        type="submit">Ajouter la transaction</button>
+    </div>
   </form>
 
 <CategorySelectorLayer 
@@ -124,13 +161,27 @@
         &.is-expense {
         background-color: #f4a9a9; /* rouge clair ou la couleur de ton choix */
         }
+        &__category-flex-line{
+            #category{
+                pointer-events: none;
+                
+                width: 100%;
+            }
+        }
+        &__category-button{
+            margin-bottom: 0.5rem;
+        }
+        &__submit-line{
+            display: flex;
+            justify-content: flex-end;
+        }
     }
     .button-shape-radio-group{
         display: flex;
         justify-content: space-between;
         gap:0.25rem;
         &__label{
-            
+            display: flex;
             flex-grow: 1;
             & input {
                 width: 0;
@@ -157,4 +208,5 @@
             }
         }
     }
+
   </style>
