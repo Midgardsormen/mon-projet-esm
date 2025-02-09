@@ -2,7 +2,7 @@
     import { FormInput, FormTextarea } from "yesvelte/form";
     import {Icon} from "yesvelte/icon";
     import { createTransaction } from './statics/transaction-creation.js';
-    import { transactions } from '../../../stores/transactionsStore.js';
+    import { groupedTransactions } from '../../../stores/transactionsStore.js';
     import type { CategoryWithChildren, CreateTransactionDto, Transaction } from "types/interfaces.js";
     import { createEventDispatcher, onMount } from 'svelte';
     import CategorySelectorLayer from '../../categories/categories-selector/CategorySelectorLayer.svelte';
@@ -26,11 +26,34 @@
       const payload = { amount, type, category_id, description, date };
       try {
           const response: CreateTransactionDto[] = await createTransaction(payload);
-          const category: CategoryWithChildren | null = await fetchCategoryById(category_id)
+          const category: CategoryWithChildren | null = await fetchCategoryById(category_id);
+          const newTransaction: Transaction = { ...response[0], category } as Transaction;
           // Mettre à jour le store après création
-          transactions.update(current => {
-                return [...current, {...response[0], ...{category}} as Transaction]
-            } );
+          groupedTransactions.update(groups => {
+                // Calculer la clé du groupe pour la nouvelle transaction
+                const txDate = new Date(newTransaction.date);
+                const monthName = txDate.toLocaleString('fr-FR', { month: 'long' });
+                const year = txDate.getFullYear();
+                const groupKey = `${monthName} ${year}`;
+
+                // Chercher le groupe correspondant
+                const groupIndex = groups.findIndex(g => g.monthYear === groupKey);
+                if (groupIndex !== -1) {
+                groups[groupIndex].transactions.push(newTransaction);
+                } else {
+                groups.push({ monthYear: groupKey, transactions: [newTransaction] });
+                }
+                // Optionnel : trier les groupes et les transactions
+                groups.forEach(g => {
+                g.transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                });
+                groups.sort((a, b) => {
+                const dateA = new Date(a.transactions[0].date);
+                const dateB = new Date(b.transactions[0].date);
+                return dateB.getTime() - dateA.getTime();
+                });
+                return groups;
+            });
           
 
           // Réinitialiser les champs

@@ -13,13 +13,15 @@ export class AppController {
   @Render('ssr-main')
   async getHome() {
     const transactions = await this.transactionsService.findAll();
+    const groupedTransactions = await this.transactionsService.findTransactionsGroupedByMonth(0, 10);
     const categories = await this.categoriesService.findAll();
-console.log('transactions',transactions)
+
     return {
       ssr: 'main_component',
       hydration: true,
       dataForHydration: {
         message: 'Hello from SSR!',
+        groupedTransactions: groupedTransactions,
         transactions: transactions,  // Inclure les transactions dans les données
         categories: categories
       },

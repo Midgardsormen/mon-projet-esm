@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { transactions } from '../../../../stores/transactionsStore.js';
-import type { CreateTransactionDto, Transaction } from 'types/interfaces.js';
+import type { CreateTransactionDto, GroupedTransactionsResponse, Transaction } from 'types/interfaces.js';
 
 const apiClient = axios.create({
     baseURL: '/api',
@@ -14,13 +13,25 @@ const apiClient = axios.create({
       const response = await apiClient.get('/transactions');
       // S'assure que ce soit un tableau, même si la base est vide
       const data = Array.isArray(response.data) ? response.data : [];
-      transactions.set(data);
       return data; // <-- éventuellement retourner le tableau si tu en as besoin
     } catch (err) {
       console.error('Error fetching transactions:', err);
       // En cas d'erreur, on met un tableau vide
-      transactions.set([]);
       return [];
+    }
+  }
+
+  export async function fetchGroupedTransactions(page = 0, limit = 10): Promise<GroupedTransactionsResponse> {
+    try {
+      const response = await fetch(`/api/transactions/grouped?page=${page}&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des transactions groupées');
+      }
+      const groupedData: GroupedTransactionsResponse = await response.json();
+      return groupedData;
+    } catch (error) {
+      console.error("Erreur dans fetchGroupedTransactions :", error);
+      throw error; // On relance l'erreur pour que l'appelant puisse la gérer également
     }
   }
 

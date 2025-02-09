@@ -24,6 +24,16 @@ export interface CreateTransactionDto {
     date: string;
   }
 
+  export interface GroupedTransaction {
+    monthYear:string;
+    transactions: Transaction[];
+  }
+
+  export interface GroupedTransactionsResponse {
+    groups:GroupedTransaction[];
+    hasMore: boolean;
+  }
+
   export interface CategoryWithChildren {
     id: string;
     name: string;

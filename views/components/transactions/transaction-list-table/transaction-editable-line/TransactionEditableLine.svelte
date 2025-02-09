@@ -4,7 +4,7 @@
     import type { Transaction } from 'types/interfaces.js';
     import { Icon } from 'yesvelte/icon';
     import { updateTransaction } from '../statics/TransactionListTable.js';
-    import { transactions } from '../../../../stores/transactionsStore.js';
+    import { groupedTransactions  } from '../../../../stores/transactionsStore.js';
     import { Card, CardBody } from 'yesvelte/card';
     import CategorySelectorLayer from '../../../categories/categories-selector/CategorySelectorLayer.svelte';
 
@@ -23,11 +23,42 @@
     async function handleSubmit() {
       const payload = { amount, type, category_id, description, date };
       const [updatedTransaction]: Transaction[] = await updateTransaction(id as string, payload);
-      transactions.update((currentTransactions) => {
-        return currentTransactions.map((t) =>
-          t.id === updatedTransaction.id ? updatedTransaction : t
-        );
+      groupedTransactions.update(groups => {
+        // Retirer la transaction existante (si elle se trouve dans l'un des groupes)
+        let updatedGroups = groups.map(group => {
+          return { ...group, transactions: group.transactions.filter(t => t.id !== updatedTransaction.id) };
+        });
+
+        // Calculer le groupe cible en fonction de la date de la transaction mise à jour
+        const txDate = new Date(updatedTransaction.date);
+        const monthName = txDate.toLocaleString('fr-FR', { month: 'long' });
+        const year = txDate.getFullYear();
+        const groupKey = `${monthName} ${year}`;
+
+        // Trouver le groupe correspondant
+        const groupIndex = updatedGroups.findIndex(g => g.monthYear === groupKey);
+        if (groupIndex !== -1) {
+          // Insérer la transaction mise à jour dans le groupe existant
+          updatedGroups[groupIndex].transactions.push(updatedTransaction);
+        } else {
+          // Créer un nouveau groupe si aucun groupe ne correspond
+          updatedGroups.push({ monthYear: groupKey, transactions: [updatedTransaction] });
+        }
+
+        // Tri optionnel : trier les groupes et les transactions à l'intérieur
+        updatedGroups.forEach(g => {
+          g.transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        });
+        updatedGroups.sort((a, b) => {
+          // On trie en comparant la date de la première transaction de chaque groupe
+          const dateA = new Date(a.transactions[0].date);
+          const dateB = new Date(b.transactions[0].date);
+          return dateB.getTime() - dateA.getTime();
+        });
+
+        return updatedGroups;
       });
+      
       dispatch('editDone');
     }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CreateTransactionDto } from '../../dto/create-transaction.dto.js';
 import { TransactionsService } from './transactions.service.js';
@@ -13,6 +13,17 @@ export class TransactionsController {
   @Get()
   findAll() {
     return this.transactionsService.findAll();
+  }
+
+  @ApiOperation({ summary: 'Récupérer les transactions groupées par mois/année avec pagination' })
+  @Get('grouped')
+  async findGrouped(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+  ) {
+    const pageNumber = parseInt(page, 10) || 0;
+    const limitNumber = parseInt(limit, 10) || 20;
+    return this.transactionsService.findTransactionsGroupedByMonth(pageNumber, limitNumber);
   }
 
   @ApiOperation({ summary: 'Ajouter une nouvelle transaction' })
