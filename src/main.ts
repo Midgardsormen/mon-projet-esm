@@ -4,12 +4,13 @@ import { svelteTemplateEngine } from './svelte-engine.js';
 import { join } from 'path';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
+  app.use(cookieParser());
   // Servir les fichiers statiques compilés par Vite (JS, CSS, etc.)
   app.useStaticAssets(join(process.cwd(), 'dist-client'), {
     prefix: '/static',
@@ -26,6 +27,14 @@ async function bootstrap() {
   .setTitle('Max Budget Admin')
   .setDescription('API pour gérer les budgets personnels')
   .setVersion('1.0')
+  .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT', // facultatif, utile pour clarifier le format
+    },
+    'BearerAuth', // Nom du schéma (peut être n'importe quel string)
+  )
   .build();
 
   const document = SwaggerModule.createDocument(app, config);

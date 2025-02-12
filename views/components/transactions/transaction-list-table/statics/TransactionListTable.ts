@@ -1,16 +1,18 @@
 import axios from 'axios';
 import type { CreateTransactionDto, GroupedTransactionsResponse, Transaction } from 'types/interfaces.js';
+import { supabase } from '../../../../../libs/shared/src/client/supabase/supabase.js';
+import apiClient from '../../../../../libs/shared/src/client/api-client.js';
 
-const apiClient = axios.create({
-    baseURL: '/api',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
 
-  export async function fetchTransactions() {
+  export async function fetchTransactions() {  
+     const { data: { session }, error } = await supabase.auth.getSession();
+     const token = session?.access_token;
+     console.log('${token}', token)
     try {
-      const response = await apiClient.get('/transactions');
+      const response = await apiClient.get('/transactions', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
       // S'assure que ce soit un tableau, même si la base est vide
       const data = Array.isArray(response.data) ? response.data : [];
       return data; // <-- éventuellement retourner le tableau si tu en as besoin
@@ -22,8 +24,13 @@ const apiClient = axios.create({
   }
 
   export async function fetchGroupedTransactions(page = 0, limit = 10): Promise<GroupedTransactionsResponse> {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    const token = session?.access_token;
     try {
-      const response = await fetch(`/api/transactions/grouped?page=${page}&limit=${limit}`);
+      const response = await fetch(`/api/transactions/grouped?page=${page}&limit=${limit}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
       if (!response.ok) {
         throw new Error('Erreur lors de la récupération des transactions groupées');
       }

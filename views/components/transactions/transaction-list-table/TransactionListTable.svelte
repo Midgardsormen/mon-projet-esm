@@ -17,12 +17,13 @@
   let editingTransactionId: string | null = null;
   let currentPage = 0;
   let limit = 10;
-  let hasMore = true;
+  let hasMore = dataForHydration?.groupedTransactions?.hasMore || false;
 
   onMount(async () => {
     if (!dataForHydration?.groupedTransactions) {
       const initialData = await fetchGroupedTransactions(currentPage, limit);
       groupedTransactions.set(initialData.groups);
+      hasMore = initialData.hasMore;
     } else {
       groupedTransactions.set(displayedGroupedTransactions);
   }});
@@ -88,9 +89,9 @@
 
 <ul class="transaction-table">
   {#each displayedGroupedTransactions as group}
-    <li class="transaction-group">
-      <h2 class="transaction-group__header">{group.monthYear}</h2>
-      <ul>
+    <li class="transaction-table__group">
+      <h2 class="transaction-table__group-header">{group.monthYear}</h2>
+      <ul class="transaction-table__group-list">
         {#each group.transactions  as transaction (transaction.id)}
           {#if editingTransactionId === transaction.id}
             <TransactionEditableLine transactionLineData={transaction} on:editDone={() => editingTransactionId = null}/>
@@ -99,7 +100,7 @@
               <Card>
                 <CardBody>
                   <div class="transaction-table__header transaction-table__header--{transaction.type}">
-                  <p class="transaction-table__item transaction-table__amount transaction-table__amount--{transaction.type}">{transaction.type==="expense" ? "-":"+"} {transaction.amount} €</p>
+                  <p class="transaction-table__item transaction-table__amount transaction-table__amount--{transaction.type}">{transaction.type==="income" ? "+" : ""} {transaction.amount} €</p>
                   <div class="transaction-table__buttons">
                     <TransactionDeletionButton idToDelete={transaction.id}/>
                     <Button outline color="dark"  on:click={() => enterEditMode(transaction.id)}>
@@ -145,6 +146,12 @@
   .transaction-table{
     list-style-type: none;
     padding: 0;
+    &__group{
+      &-header{}
+      &-list{
+        padding: 0;
+      }
+    }
     &__header{
       display: flex;
       margin-bottom: 1rem;

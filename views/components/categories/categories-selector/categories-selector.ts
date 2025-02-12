@@ -1,13 +1,8 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { categories } from "../../../stores/categoriesStore.js";
 import type { CategoryWithChildren } from "types/interfaces.js";
+import apiClient from "../../../../libs/shared/src/client/api-client.js";
 
-const apiClient = axios.create({
-    baseURL: '/api',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
   
   export async function fetchCategories(): Promise<CategoryWithChildren[]> {
     try {

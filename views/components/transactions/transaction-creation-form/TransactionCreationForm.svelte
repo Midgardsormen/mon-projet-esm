@@ -2,7 +2,7 @@
     import { FormInput, FormTextarea } from "yesvelte/form";
     import {Icon} from "yesvelte/icon";
     import { createTransaction } from './statics/transaction-creation.js';
-    import { groupedTransactions } from '../../../stores/transactionsStore.js';
+    import { groupedTransactions, totalBalance } from '../../../stores/transactionsStore.js';
     import type { CategoryWithChildren, CreateTransactionDto, Transaction } from "types/interfaces.js";
     import { createEventDispatcher, onMount } from 'svelte';
     import CategorySelectorLayer from '../../categories/categories-selector/CategorySelectorLayer.svelte';
@@ -54,7 +54,9 @@
                 });
                 return groups;
             });
-          
+            totalBalance.update(currentBalance => {
+                return currentBalance + response[0].amount;
+            });
 
           // Réinitialiser les champs
           resetForm();

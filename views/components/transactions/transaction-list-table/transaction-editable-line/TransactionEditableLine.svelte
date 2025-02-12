@@ -4,7 +4,7 @@
     import type { Transaction } from 'types/interfaces.js';
     import { Icon } from 'yesvelte/icon';
     import { updateTransaction } from '../statics/TransactionListTable.js';
-    import { groupedTransactions  } from '../../../../stores/transactionsStore.js';
+    import { groupedTransactions, totalBalance  } from '../../../../stores/transactionsStore.js';
     import { Card, CardBody } from 'yesvelte/card';
     import CategorySelectorLayer from '../../../categories/categories-selector/CategorySelectorLayer.svelte';
 
@@ -58,7 +58,9 @@
 
         return updatedGroups;
       });
-      
+      totalBalance.update(currentBalance => {
+          return currentBalance + updatedTransaction.amount;
+      });
       dispatch('editDone');
     }
 

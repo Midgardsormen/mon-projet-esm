@@ -20,7 +20,7 @@
     // pour autoriser l'import .svelte
     "allowJs": true, // ou false, dépend de ton usage
     "strict": true, // plus safe
-    "types": ["svelte"]
+    "types": ["svelte", "vite/client"]
   },
   // IMPORTANT : "include" doit mentionner tes .svelte
   "include": [
@@ -29,7 +29,8 @@
     "svelte.d.ts",
     // Ajoute
     "views/**/*.svelte",
-    "views/**/*.ts"
+    "views/**/*.ts",
+    "libs/shared/src/client/**/*.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.spec.ts"]
 }

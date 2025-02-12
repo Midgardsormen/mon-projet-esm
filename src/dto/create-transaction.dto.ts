@@ -28,4 +28,10 @@ export class CreateTransactionDto {
     @IsString()
     @IsNotEmpty()
     date!: string; // On utilise string pour simplifier le traitement
+
+    @ApiProperty({ description: 'ID de la Catégorie de la transaction (e.g. Salaire)', example: '067e512e-83c6-423f-87d4-240a574480c1' })
+    @IsString()
+    @IsUUID()
+    @IsNotEmpty()
+    user_id?: string;
 }
